@@ -1,0 +1,14 @@
+{
+  "name": "dinks",
+  "private": true,
+  "workspaces": ["web", "mobile", "packages/*"],
+  "overrides": {
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "scripts": {
+    "build:web": "npm run build --workspace=@dinks/web",
+    "check": "npm run check --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  }
+}

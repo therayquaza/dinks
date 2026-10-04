@@ -1,0 +1,16 @@
+version: 2
+
+# Renovate handles all other updates (Docker, Go modules, npm, Helm charts, Terraform).
+# Dependabot is kept only for GitHub Actions workflow dependencies.
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "dependencies"
+      - "ci"
+    commit-message:
+      prefix: "ci"

@@ -1,0 +1,34 @@
+version: "2"
+
+run:
+  timeout: 5m
+
+linters:
+  default: none
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - ineffassign
+    - misspell
+    - unconvert
+    - unparam
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - errcheck
+          - unparam
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/therayquaza
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

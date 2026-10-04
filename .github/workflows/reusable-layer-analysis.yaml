@@ -1,0 +1,33 @@
+name: Template - Docker Layer Analysis
+
+on:
+  workflow_call:
+    inputs:
+      image-ref:
+        description: Full image reference (name:tag) to analyze
+        required: true
+        type: string
+      ci-config:
+        description: repo-relative path to dive CI rules config
+        required: false
+        type: string
+        default: ".dive-ci"
+
+jobs:
+  dive:
+    runs-on: [home-cluster]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Analyze image layers with dive
+        run: |
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$GITHUB_WORKSPACE:/repo" \
+            -w /repo \
+            -e CI=true \
+            docker.io/wagoodman/dive:latest \
+            "${{ inputs.image-ref }}" \
+            --ci-config "${{ inputs.ci-config }}"

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits"
+  ],
+  "timezone": "Europe/Paris",
+  "labels": ["dependencies"],
+
+  "automerge": false,
+  "minimumReleaseAge": "1 day",
+  "rollbackPrs": true,
+
+  "packageRules": [
+    {
+      "description": "go modules",
+      "matchManagers": ["gomod"],
+      "groupName": "go modules",
+      "labels": ["dependencies", "go"]
+    },
+    {
+      "description": "npm/bun",
+      "matchManagers": ["npm", "bun"],
+      "groupName": "npm",
+      "labels": ["dependencies", "npm"]
+    },
+    {
+      "description": "pin container image digests",
+      "matchManagers": ["dockerfile", "docker-compose"],
+      "pinDigests": true
+    },
+    {
+      "description": "floating tags - digest pinning is pure noise here",
+      "matchPackageNames": ["nginx", "nginxinc/nginx-unprivileged"],
+      "pinDigests": false
+    },
+    {
+      "description": "auto-merge go updates once CI is green",
+      "matchManagers": ["gomod"],
+      "automerge": true,
+      "automergeType": "pr"
+    }
+  ]
+}

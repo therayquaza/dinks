@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #fdf1f6;
+  --color-brand-100: #fbdde9;
+  --color-brand-200: #f6c2d8;
+  --color-brand-300: #ec9bbe;
+  --color-brand-500: #cc4f82;
+  --color-brand-700: #9c3a63;
+  --color-brand: #cc4f82;
+  --color-brand-bg: #fff8fb;
+  /* Ovulation is a distinct estimate, not a period day: a teal accent keeps it
+     from reading as another shade of the period pink. */
+  --color-ovulation-100: #ccfbf1;
+  --color-ovulation-300: #5eead4;
+  --color-ovulation-500: #0d9488;
+}
+
+body {
+  background-color: var(--color-brand-bg);
+}
+
+.rdp-day_predicted {
+  border: 2px dashed var(--color-brand-500) !important;
+  border-radius: 9999px;
+}
+
+/* Per-day flow tinting. Flow varies within one period, so the grid grades each
+   day instead of painting the whole period one colour. These replace the old
+   single-colour `rdp-day_period`: a period day is now styled purely by the flow
+   recorded for that specific day, falling back to the period's summary.
+   Each level pairs a distinct lightness with the emoji and label in the day
+   detail, so the meaning never rests on hue alone. */
+.rdp-day_flow_heavy {
+  background-color: var(--color-brand-500) !important;
+  color: white !important;
+  font-weight: 700;
+}
+
+.rdp-day_flow_medium {
+  background-color: var(--color-brand-200) !important;
+  color: var(--color-brand-700) !important;
+  font-weight: 600;
+}
+
+.rdp-day_flow_light {
+  background-color: var(--color-brand-100) !important;
+  color: var(--color-brand-700) !important;
+}
+
+.rdp-day_flow_unknown {
+  background-color: var(--color-brand-50) !important;
+  color: var(--color-brand-700) !important;
+  border: 1px dashed var(--color-brand-200) !important;
+}
+
+.rdp-day_today {
+  box-shadow: inset 0 0 0 2px var(--color-brand-700);
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
+/* A day that is both today and a period day needs the ring to survive the flow
+   background, which is opaque. */
+.rdp-day_today.rdp-day_flow_heavy {
+  box-shadow: inset 0 0 0 2px var(--color-brand-700), inset 0 0 0 4px white;
+}
+
+.rdp-day_symptom {
+  position: relative;
+}
+
+.rdp-day_symptom::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--color-brand-700);
+}
+
+/* Ovulation is an estimate, so its days are ringed rather than filled; the peak
+   is the single most probable date and gets the solid fill. Declared after the
+   flow/today rules so the teal ring survives when a day is also "today". */
+.rdp-day_ovulation {
+  box-shadow: inset 0 0 0 2px var(--color-ovulation-300);
+  border-radius: 9999px;
+}
+
+.rdp-day_ovulation_peak {
+  background-color: var(--color-ovulation-500) !important;
+  color: white !important;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.rdp-day_ovulation_peak.rdp-day_today {
+  box-shadow: inset 0 0 0 2px white;
+}

@@ -1,0 +1,22 @@
+name: Template - Dockerfile Lint
+
+on:
+  workflow_call:
+    inputs:
+      dockerfile:
+        description: Path to Dockerfile relative to repo root
+        required: true
+        type: string
+
+jobs:
+  hadolint:
+    runs-on: [home-cluster]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: hadolint/hadolint-action@v3.5.0
+        with:
+          dockerfile: ${{ inputs.dockerfile }}
+          config: .hadolint.yaml

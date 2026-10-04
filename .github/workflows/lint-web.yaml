@@ -1,0 +1,42 @@
+name: Lint - web
+
+on:
+  pull_request:
+    paths:
+      - web/**
+      - mobile/**
+      - packages/**
+      - package.json
+      - package-lock.json
+      - .github/workflows/lint-web.yaml
+  push:
+    branches:
+      - main
+    paths:
+      - web/**
+      - mobile/**
+      - packages/**
+      - package.json
+      - package-lock.json
+      - .github/workflows/lint-web.yaml
+
+jobs:
+  typecheck:
+    runs-on: [home-cluster]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: .
+
+      - name: TypeScript check
+        run: npm run check

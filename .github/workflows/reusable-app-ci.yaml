@@ -1,0 +1,79 @@
+name: Template - App CI
+
+on:
+  workflow_call:
+    inputs:
+      context:
+        description: Docker build context path
+        required: true
+        type: string
+      image-name:
+        description: Full image name without tag
+        required: true
+        type: string
+      dockerfile:
+        description: Path to Dockerfile relative to repo root (for linting)
+        required: true
+        type: string
+      build-dockerfile:
+        description: Path to Dockerfile relative to the build context
+        required: false
+        type: string
+        default: Dockerfile
+      scan-target:
+        description: Directory path for the filesystem Trivy scan
+        required: true
+        type: string
+      platforms:
+        description: Target platforms for the CI build
+        required: false
+        type: string
+        default: "linux/amd64"
+
+jobs:
+  build:
+    uses: ./.github/workflows/reusable-build.yaml
+    with:
+      context: ${{ inputs.context }}
+      image-name: ${{ inputs.image-name }}
+      dockerfile: ${{ inputs.build-dockerfile }}
+      push: false
+      load: true
+      platforms: ${{ inputs.platforms }}
+    permissions:
+      contents: read
+      packages: read
+
+  hadolint:
+    uses: ./.github/workflows/reusable-lint-docker.yaml
+    with:
+      dockerfile: ${{ inputs.dockerfile }}
+    permissions:
+      contents: read
+
+  trivy-fs:
+    uses: ./.github/workflows/reusable-security-trivy.yaml
+    with:
+      scan-type: fs
+      target: ${{ inputs.scan-target }}
+    permissions:
+      contents: read
+      security-events: write
+
+  layer-analysis:
+    needs: build
+    uses: ./.github/workflows/reusable-layer-analysis.yaml
+    with:
+      image-ref: ${{ needs.build.outputs.image-ref }}
+    permissions:
+      contents: read
+
+  trivy-image:
+    needs: build
+    uses: ./.github/workflows/reusable-security-trivy.yaml
+    with:
+      scan-type: image
+      target: ${{ needs.build.outputs.image-ref }}
+    permissions:
+      contents: read
+      security-events: write

@@ -1,0 +1,26 @@
+name: Template - Go Lint
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: Directory containing go.mod
+        required: true
+        type: string
+
+jobs:
+  golangci-lint:
+    runs-on: [home-cluster]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: ${{ inputs.working-directory }}/go.mod
+          cache: false
+
+      - uses: golangci/golangci-lint-action@v9
+        with:
+          working-directory: ${{ inputs.working-directory }}

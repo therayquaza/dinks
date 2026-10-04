@@ -1,0 +1,4 @@
+ignore:
+  - DL3018
+
+failure-threshold: warning

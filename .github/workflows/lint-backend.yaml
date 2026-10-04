@@ -1,0 +1,25 @@
+name: Lint - backend
+
+on:
+  pull_request:
+    paths:
+      - backend/**
+      - .golangci.yml
+      - .github/workflows/lint-backend.yaml
+      - .github/workflows/reusable-lint-go.yaml
+  push:
+    branches:
+      - main
+    paths:
+      - backend/**
+      - .golangci.yml
+      - .github/workflows/lint-backend.yaml
+      - .github/workflows/reusable-lint-go.yaml
+
+jobs:
+  go:
+    uses: ./.github/workflows/reusable-lint-go.yaml
+    with:
+      working-directory: backend
+    permissions:
+      contents: read

@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  pull_request:
+    paths:
+      - backend/**
+      - web/**
+      - mobile/**
+      - packages/**
+      - package.json
+      - package-lock.json
+      - docker-compose.yaml
+      - .hadolint.yaml
+      - .dive-ci
+      - .github/workflows/ci.yaml
+      - .github/workflows/reusable-app-ci.yaml
+      - .github/workflows/reusable-build.yaml
+      - .github/workflows/reusable-lint-docker.yaml
+      - .github/workflows/reusable-layer-analysis.yaml
+      - .github/workflows/reusable-security-trivy.yaml
+  push:
+    branches:
+      - main
+    paths:
+      - backend/**
+      - web/**
+      - mobile/**
+      - packages/**
+      - package.json
+      - package-lock.json
+      - docker-compose.yaml
+      - .hadolint.yaml
+      - .dive-ci
+      - .github/workflows/ci.yaml
+      - .github/workflows/reusable-app-ci.yaml
+      - .github/workflows/reusable-build.yaml
+      - .github/workflows/reusable-lint-docker.yaml
+      - .github/workflows/reusable-layer-analysis.yaml
+      - .github/workflows/reusable-security-trivy.yaml
+
+jobs:
+  backend:
+    uses: ./.github/workflows/reusable-app-ci.yaml
+    with:
+      context: backend
+      image-name: ghcr.io/therayquaza/dinks/backend
+      dockerfile: backend/Dockerfile
+      scan-target: backend
+    permissions:
+      contents: read
+      packages: read
+      security-events: write
+
+  web:
+    uses: ./.github/workflows/reusable-app-ci.yaml
+    with:
+      context: .
+      image-name: ghcr.io/therayquaza/dinks/web
+      dockerfile: web/Dockerfile
+      build-dockerfile: web/Dockerfile
+      scan-target: .
+    permissions:
+      contents: read
+      packages: read
+      security-events: write
